@@ -39,15 +39,18 @@ export async function generateMetadata(): Promise<Metadata> {
     };
 }
 
-import { getPosts } from "@/lib/api";
+import { prisma } from "@/lib/prisma";
 
 export default async function InsightsPage() {
     let posts: any[] = [];
     try {
-        const rawPosts = await getPosts();
-        posts = JSON.parse(JSON.stringify(rawPosts.filter(p => p.published)));
+        const rawPosts = await prisma.post.findMany({
+            where: { published: true },
+            orderBy: { createdAt: 'desc' },
+        });
+        posts = JSON.parse(JSON.stringify(rawPosts));
     } catch (err) {
-        console.error("Failed to fetch posts for InsightsPage", err);
+        console.error("Failed to fetch posts for InsightsPage using Prisma:", err);
     }
 
     return <InsightsClient initialPosts={posts} />;
