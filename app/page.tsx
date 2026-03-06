@@ -20,7 +20,9 @@ export default async function Home() {
 
   try {
     const rawSlides = await heroService.getAll();
-    slides = Array.isArray(rawSlides) ? rawSlides : [];
+    if (Array.isArray(rawSlides)) {
+      slides = JSON.parse(JSON.stringify(rawSlides));
+    }
   } catch (err) {
     console.error("Home: Failed to fetch hero slides", err);
   }
@@ -28,7 +30,8 @@ export default async function Home() {
   try {
     const rawProducts = await productService.getAll();
     if (Array.isArray(rawProducts)) {
-      products = rawProducts.filter(p => p.isPopular).slice(0, 3);
+      const filtered = rawProducts.filter(p => p.isPopular).slice(0, 3);
+      products = JSON.parse(JSON.stringify(filtered));
     }
   } catch (err) {
     console.error("Home: Failed to fetch products", err);
@@ -37,7 +40,8 @@ export default async function Home() {
   try {
     const rawProjects = await projectService.getAll();
     if (Array.isArray(rawProjects)) {
-      projects = rawProjects.filter(p => p.published);
+      const filtered = rawProjects.filter(p => p.published);
+      projects = JSON.parse(JSON.stringify(filtered));
     }
   } catch (err) {
     console.error("Home: Failed to fetch projects", err);

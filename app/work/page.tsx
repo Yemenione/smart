@@ -26,7 +26,9 @@ export default async function WorkPage() {
     let projects: any[] = [];
     try {
         const rawProjects = await projectService.getAll();
-        projects = Array.isArray(rawProjects) ? rawProjects.filter(p => p.published) : [];
+        // Serialize the DB objects to flat JSON to remove Prisma Date objects, matching the Client Component prop expectations.
+        const safeProjects = Array.isArray(rawProjects) ? rawProjects.filter(p => p.published) : [];
+        projects = JSON.parse(JSON.stringify(safeProjects));
     } catch (err) {
         console.error("Failed to fetch projects for Work page", err);
     }
