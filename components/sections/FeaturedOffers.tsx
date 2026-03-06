@@ -19,23 +19,12 @@ interface ProductApp {
     isPopular: boolean;
 }
 
-export default function FeaturedOffers() {
+export default function FeaturedOffers({ initialProducts = [] }: { initialProducts?: ProductApp[] }) {
     const { t, language } = useLanguage();
-    const [products, setProducts] = useState<ProductApp[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    // We keep state in case we want to add dynamic filtering later
+    const [products, setProducts] = useState<ProductApp[]>(initialProducts);
 
-    useEffect(() => {
-        fetch("/api/products")
-            .then(res => res.json())
-            .then(data => {
-                // Show only popular/featured ones for the homepage
-                setProducts(data.filter((p: ProductApp) => p.isPopular).slice(0, 3));
-                setIsLoading(false);
-            })
-            .catch(err => console.error("Failed to fetch featured offers", err));
-    }, []);
-
-    if (!isLoading && products.length === 0) return null;
+    if (products.length === 0) return null;
 
     return (
         <section className="py-24 md:py-32 px-4 md:px-12 bg-[#020202] relative overflow-hidden">
@@ -75,50 +64,46 @@ export default function FeaturedOffers() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {isLoading ? (
-                        [1, 2, 3].map(i => <Skeleton key={i} className="h-[450px] rounded-3xl" />)
-                    ) : (
-                        products.map((product, index) => (
-                            <motion.div
-                                key={product.id}
-                                initial={{ opacity: 0, y: 40 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                                className="group relative bg-white/[0.03] border border-white/5 rounded-3xl overflow-hidden hover:bg-white/[0.05] hover:border-white/10 transition-all duration-500"
-                            >
-                                <div className="aspect-[4/3] relative overflow-hidden">
-                                    <Image
-                                        src={product.imageUrl}
-                                        alt={product.name}
-                                        fill
-                                        className="object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100"
-                                    />
-                                    <div className="absolute top-4 right-4 bg-white text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
-                                        {language === 'fr' ? 'POPULAIRE' : 'POPULAR'}
-                                    </div>
+                    {products.map((product, index) => (
+                        <motion.div
+                            key={product.id}
+                            initial={{ opacity: 0, y: 40 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="group relative bg-white/[0.03] border border-white/5 rounded-3xl overflow-hidden hover:bg-white/[0.05] hover:border-white/10 transition-all duration-500"
+                        >
+                            <div className="aspect-[4/3] relative overflow-hidden">
+                                <Image
+                                    src={product.imageUrl}
+                                    alt={product.name}
+                                    fill
+                                    className="object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100"
+                                />
+                                <div className="absolute top-4 right-4 bg-white text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
+                                    {language === 'fr' ? 'POPULAIRE' : 'POPULAR'}
                                 </div>
-                                <div className="p-8">
-                                    <h3 className="font-heading text-2xl text-white mb-3 font-bold">
-                                        {language === 'fr' && product.nameFr ? product.nameFr : product.name}
-                                    </h3>
-                                    <p className="text-white/40 text-sm font-body line-clamp-2 mb-6">
-                                        {language === 'fr' && product.descriptionFr ? product.descriptionFr : product.description}
-                                    </p>
-                                    <div className="flex items-center justify-between pt-6 border-t border-white/5">
-                                        <span className="text-white font-mono text-sm tracking-tighter">
-                                            {language === 'fr' && product.priceTextFr ? product.priceTextFr : product.priceText}
-                                        </span>
-                                        <Link
-                                            href="/store"
-                                            className="text-[10px] font-mono tracking-widest uppercase text-white/60 hover:text-white transition-colors"
-                                        >
-                                            {language === 'fr' ? 'DÉTAILS →' : 'DETAILS →'}
-                                        </Link>
-                                    </div>
+                            </div>
+                            <div className="p-8">
+                                <h3 className="font-heading text-2xl text-white mb-3 font-bold">
+                                    {language === 'fr' && product.nameFr ? product.nameFr : product.name}
+                                </h3>
+                                <p className="text-white/40 text-sm font-body line-clamp-2 mb-6">
+                                    {language === 'fr' && product.descriptionFr ? product.descriptionFr : product.description}
+                                </p>
+                                <div className="flex items-center justify-between pt-6 border-t border-white/5">
+                                    <span className="text-white font-mono text-sm tracking-tighter">
+                                        {language === 'fr' && product.priceTextFr ? product.priceTextFr : product.priceText}
+                                    </span>
+                                    <Link
+                                        href="/store"
+                                        className="text-[10px] font-mono tracking-widest uppercase text-white/60 hover:text-white transition-colors"
+                                    >
+                                        {language === 'fr' ? 'DÉTAILS →' : 'DETAILS →'}
+                                    </Link>
                                 </div>
-                            </motion.div>
-                        ))
-                    )}
+                            </div>
+                        </motion.div>
+                    ))}
                 </div>
             </div>
         </section>

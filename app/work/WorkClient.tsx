@@ -7,7 +7,9 @@ import { motion } from "framer-motion";
 
 import { useLanguage } from "@/context/LanguageContext";
 
-export default function WorkClient() {
+import { ProjectData } from "@/lib/api";
+
+export default function WorkClient({ initialProjects = [] }: { initialProjects?: ProjectData[] }) {
     const { t } = useLanguage();
 
     return (
@@ -62,7 +64,7 @@ export default function WorkClient() {
             </div>
 
             {/* Reusing our beautiful bento grid Work component */}
-            <WorkSection />
+            <WorkSection initialProjects={initialProjects} />
 
             <Footer />
         </div>

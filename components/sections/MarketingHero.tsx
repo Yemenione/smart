@@ -17,27 +17,9 @@ interface HeroSlide {
     order: number;
 }
 
-export default function MarketingHero() {
-    const [slides, setSlides] = useState<HeroSlide[]>([]);
+export default function MarketingHero({ initialSlides = [] }: { initialSlides?: HeroSlide[] }) {
+    const [slides, setSlides] = useState<HeroSlide[]>(initialSlides);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchSlides = async () => {
-            try {
-                const res = await fetch("/api/hero");
-                if (res.ok) {
-                    const data = await res.json();
-                    setSlides(data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch slides", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchSlides();
-    }, []);
 
     // Auto-advance slides every 6 seconds
     useEffect(() => {
@@ -58,11 +40,11 @@ export default function MarketingHero() {
         setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
     };
 
-    if (isLoading || slides.length === 0) {
-        // Fallback loading state
+    if (slides.length === 0) {
+        // Fallback state if no slides are provided
         return (
             <div className="relative w-full h-screen bg-[#020202] flex items-center justify-center overflow-hidden">
-                <div className="w-12 h-12 border-4 border-accent/20 border-t-accent rounded-full animate-spin" />
+                <div className="text-white/20 text-sm">No featured slides available</div>
             </div>
         );
     }

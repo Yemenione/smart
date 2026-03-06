@@ -20,6 +20,16 @@ export async function generateMetadata(): Promise<Metadata> {
     };
 }
 
-export default function WorkPage() {
-    return <WorkClient />;
+import { projectService } from "@/lib/services/project";
+
+export default async function WorkPage() {
+    let projects: any[] = [];
+    try {
+        const rawProjects = await projectService.getAll();
+        projects = Array.isArray(rawProjects) ? rawProjects.filter(p => p.published) : [];
+    } catch (err) {
+        console.error("Failed to fetch projects for Work page", err);
+    }
+
+    return <WorkClient initialProjects={projects} />;
 }
