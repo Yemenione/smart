@@ -10,31 +10,9 @@ import ReadingProgress from "@/components/ui/ReadingProgress";
 import ShareWidget from "@/components/ui/ShareWidget";
 import { useLanguage } from "@/context/LanguageContext";
 
-export default function PostClient() {
+export default function PostClient({ initialPost }: { initialPost: any }) {
     const { t } = useLanguage();
-    const params = useParams();
-    const id = params.id as string;
-
-    const [post, setPost] = useState<any>(null);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchPost = async () => {
-            try {
-                const res = await fetch(`/api/posts/${id}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setPost(data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch post", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        if (id) fetchPost();
-    }, [id]);
+    const post = initialPost;
 
     const getImageUrl = (imagePath: string | null | undefined) => {
         if (!imagePath) return "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop";
@@ -42,17 +20,6 @@ export default function PostClient() {
         const STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL || "http://127.0.0.1:8000/storage";
         return `${STORAGE_URL}/${imagePath}`;
     };
-
-    if (isLoading) {
-        return (
-            <>
-                <Navbar />
-                <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-                    <div className="w-8 h-8 border-2 border-accent/20 border-t-accent rounded-full animate-spin" />
-                </div>
-            </>
-        );
-    }
 
     if (!post) {
         notFound();

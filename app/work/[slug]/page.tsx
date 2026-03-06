@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { translations, Language } from "@/lib/translations";
 import { Metadata } from "next";
 import ProjectClient from "./ProjectClient";
-import { getProjectBySlug } from "@/lib/api";
+import { projectService } from "@/lib/services/project";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -17,7 +17,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     try {
         const resolvedParams = await params;
         const slug = resolvedParams.slug;
-        const project = await getProjectBySlug(slug);
+        const rawProjects = await projectService.getAll();
+        const project = Array.isArray(rawProjects) ? rawProjects.find((p: any) => p.slug === slug) : null;
 
         const cookieStore = await cookies();
         const savedLang = cookieStore.get('NEXT_LOCALE')?.value as Language | undefined;
@@ -61,6 +62,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 }
 
-export default function ProjectPage() {
-    return <ProjectClient />;
+export default async function ProjectPage({ params }: Props) {
+    const resolvedParams = await params;
+    const slug = resolvedParams.slug;
+
+    // Server-side fetch to eliminate useEffect
+    let project = null;
+    try {
+        const rawProjects = await projectService.getAll();
+        const foundProject = Array.isArray(rawProjects) ? rawProjects.find((p: any) => p.slug === slug) : null;
+        if (foundProject) {
+            project = JSON.parse(JSON.stringify(foundProject)); // Serialize Prisma Dates
+        }
+    } catch (err) {
+        console.error("Failed to fetch project for ProjectPage", err);
+    }
+
+    return <ProjectClient initialProject={project} />;
 }

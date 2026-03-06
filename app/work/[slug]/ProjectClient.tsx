@@ -14,24 +14,11 @@ import { useEffect, useRef, useState } from "react";
 import { getProjectBySlug, FullProjectData } from "@/lib/api";
 import { useLanguage } from "@/context/LanguageContext";
 
-export default function ProjectClient() {
+export default function ProjectClient({ initialProject }: { initialProject: FullProjectData | null }) {
     const { t, language } = useLanguage();
-    const params = useParams();
-    const slug = params.slug as string;
 
-    const [project, setProject] = useState<FullProjectData | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchProject = async () => {
-            const data = await getProjectBySlug(slug);
-            setProject(data);
-            // Brief elegant loading state
-            setTimeout(() => setIsLoading(false), 500);
-        };
-
-        if (slug) fetchProject();
-    }, [slug]);
+    // Use the server-provided project instantly (no loading waterfalls)
+    const project = initialProject;
 
     const containerRef = useRef(null);
     const { scrollYProgress } = useScroll({
@@ -62,20 +49,6 @@ export default function ProjectClient() {
         "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop",
         "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop",
     ];
-
-    if (isLoading) {
-        return (
-            <div ref={containerRef} className="min-h-screen bg-[#050505] flex items-center justify-center">
-                <motion.div
-                    animate={{ opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    className="font-heading text-white/50 tracking-[0.3em] text-sm uppercase"
-                >
-                    {t.project.loading}
-                </motion.div>
-            </div>
-        );
-    }
 
     if (!project) {
         notFound(); // Triggers Next.js 404 page
@@ -171,7 +144,7 @@ export default function ProjectClient() {
                             <ShareWidget
                                 title={project.title}
                                 description={project.challenge || "Explore our latest work"}
-                                urlPath={`/work/${slug}`}
+                                urlPath={`/work/${project.slug}`}
                             />
                         </div>
                     </div>
@@ -204,7 +177,7 @@ export default function ProjectClient() {
                                 <ShareWidget
                                     title={project.title}
                                     description={project.challenge || "Explore our latest work"}
-                                    urlPath={`/work/${slug}`}
+                                    urlPath={`/work/${project.slug}`}
                                 />
                             </div>
                         </div>

@@ -12,7 +12,6 @@ async function getPostById(id: string) {
     try {
         const post = await prisma.post.findUnique({
             where: { id },
-            include: { category: true, author: true }
         });
         return post;
     } catch (error) {
@@ -46,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         );
         ogUrl.pathname = '/api/og';
         ogUrl.searchParams.set('title', post?.title || 'Insight Article');
-        ogUrl.searchParams.set('subtitle', post?.category?.name || 'Digital Innovation');
+        ogUrl.searchParams.set('subtitle', 'Digital Innovation');
         ogUrl.searchParams.set('context', 'Latest News');
         if (post?.imageUrl) {
             ogUrl.searchParams.set('bg', post.imageUrl);
@@ -75,6 +74,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 }
 
-export default function PostPage() {
-    return <PostClient />;
+export default async function PostPage({ params }: Props) {
+    const resolvedParams = await params;
+    const post = await getPostById(resolvedParams.id);
+
+    // Serialize to pass safe JSON to the Client Component
+    const serializedPost = post ? JSON.parse(JSON.stringify(post)) : null;
+
+    return <PostClient initialPost={serializedPost} />;
 }

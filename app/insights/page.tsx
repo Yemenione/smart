@@ -39,6 +39,16 @@ export async function generateMetadata(): Promise<Metadata> {
     };
 }
 
-export default function InsightsPage() {
-    return <InsightsClient />;
+import { getPosts } from "@/lib/api";
+
+export default async function InsightsPage() {
+    let posts: any[] = [];
+    try {
+        const rawPosts = await getPosts();
+        posts = JSON.parse(JSON.stringify(rawPosts.filter(p => p.published)));
+    } catch (err) {
+        console.error("Failed to fetch posts for InsightsPage", err);
+    }
+
+    return <InsightsClient initialPosts={posts} />;
 }
