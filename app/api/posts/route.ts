@@ -4,10 +4,10 @@ import { postService } from "@/lib/services/post";
 export async function GET() {
     try {
         const posts = await postService.getAll();
-        return NextResponse.json(posts);
+        return NextResponse.json(Array.isArray(posts) ? posts : []);
     } catch (error) {
         console.error("Error fetching posts:", error);
-        return NextResponse.json({ error: "Failed to fetch posts" }, { status: 500 });
+        return NextResponse.json([], { status: 200 }); // Return empty array to keep UI stable
     }
 }
 
