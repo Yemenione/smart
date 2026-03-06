@@ -253,6 +253,16 @@ export const translations = {
                 description: "Initiate a transmission with our Parisian hub to launch your next major digital project."
             }
         },
+        nav: {
+            services: "Services",
+            work: "Work",
+            agency: "The Agency",
+            team: "The Collective",
+            insights: "Insights",
+            careers: "Careers",
+            store: "Store",
+            startProject: "Start A Project",
+        },
         hero: {
             titleLine1: "ENGINEERING",
             titleLine2: "THE VOID.",
