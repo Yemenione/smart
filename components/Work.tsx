@@ -5,15 +5,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getProjects, ProjectData } from "@/lib/api";
+import { useLanguage } from "@/context/LanguageContext";
+import Skeleton from "@/components/ui/Skeleton";
+import ProjectCursor from "@/components/ui/ProjectCursor";
 
 export default function Work() {
+    const { t, language } = useLanguage();
     const [projects, setProjects] = useState<ProjectData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchProjects = async () => {
             const data = await getProjects();
-            setProjects(data);
+            // Filter only published projects for the public site
+            setProjects(data.filter(p => p.published));
             // Artificial elite delay to show the fetching state smoothly (Optional)
             setTimeout(() => setIsLoading(false), 800);
         };
@@ -31,11 +36,9 @@ export default function Work() {
         },
     };
 
-    const getImageUrl = (imagePath: string | null) => {
+    const getImageUrl = (imagePath: string | null | undefined) => {
         if (!imagePath) return "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop";
-        if (imagePath.startsWith("http")) return imagePath;
-        const STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL || "http://127.0.0.1:8000/storage";
-        return `${STORAGE_URL}/${imagePath}`;
+        return imagePath; // Local DB stores the full URL or relative path handled by user
     };
 
     return (
@@ -48,20 +51,14 @@ export default function Work() {
                     transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
                     className="font-heading text-4xl md:text-5xl text-white mb-16 tracking-tight"
                 >
-                    Selected Work. / Nos Réalisations.
+                    {t.nav.work}.
                 </motion.h2>
 
                 {isLoading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 w-full">
                         {[1, 2, 3, 4].map((skeleton) => (
-                            <div
-                                key={skeleton}
-                                className={`w-full rounded-[2rem] overflow-hidden bg-white/5 border border-white/5 h-[60vh] md:h-[70vh] animate-pulse ${skeleton % 2 === 0 ? "md:mt-16" : ""}`}
-                            >
-                                <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 z-10 flex flex-col gap-4">
-                                    <div className="h-8 md:h-12 w-3/4 bg-white/10 rounded-md" />
-                                    <div className="h-4 w-1/4 bg-white/5 rounded-md" />
-                                </div>
+                            <div key={skeleton} className={`w-full h-[60vh] md:h-[70vh] rounded-[2rem] overflow-hidden ${skeleton % 2 === 0 ? "md:mt-16" : ""}`}>
+                                <Skeleton className="w-full h-full" />
                             </div>
                         ))}
                     </div>
@@ -73,41 +70,58 @@ export default function Work() {
                         viewport={{ once: true, margin: "-50px" }}
                         className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12"
                     >
-                        {projects.map((project, index) => (
-                            <motion.div
-                                key={project.id}
-                                initial={{ opacity: 0, y: 40 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, margin: "-100px" }}
-                                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const, delay: index * 0.1 }}
-                                className={`group relative rounded-[2rem] overflow-hidden bg-[#0a0a0a] border border-white/10 hover:border-white/40 active:border-white/40 hover:shadow-[0_0_30px_rgba(255,255,255,0.08)] active:shadow-[0_0_30px_rgba(255,255,255,0.08)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] transition-all duration-700 ease-out cursor-pointer ${index % 2 !== 0 ? "md:mt-16" : ""
-                                    }`}
-                            >
-                                <Link href={`/work/${project.slug}`} className="block w-full h-full">
-                                    <div className="relative h-[60vh] md:h-[70vh] w-full overflow-hidden">
-                                        <Image
-                                            src={getImageUrl(project.cover_image)}
-                                            alt={project.title}
-                                            fill
-                                            sizes="(max-width: 768px) 100vw, 50vw"
-                                            className="object-cover transition-transform duration-[2s] group-hover:scale-105"
-                                        />
-                                        {/* Overlay gradient */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
-                                    </div>
+                        {projects.map((project, index) => {
+                            // Asymmetrical Grid Logic: Make every 3rd item span 2 columns on desktop
+                            const isDoubleWide = index % 3 === 0;
 
-                                    {/* Content inside the card */}
-                                    <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 z-10">
-                                        <h3 className="font-heading text-3xl md:text-4xl text-white mb-2 font-bold tracking-tight">
-                                            {project.title}
-                                        </h3>
-                                        <p className="font-body text-white/60 tracking-widest uppercase text-xs md:text-sm">
-                                            {project.role}
-                                        </p>
-                                    </div>
-                                </Link>
-                            </motion.div>
-                        ))}
+                            return (
+                                <motion.div
+                                    key={project.id}
+                                    initial={{ opacity: 0, y: 40 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, margin: "-100px" }}
+                                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const, delay: (index % 3) * 0.1 }}
+                                    className={`group relative rounded-[2rem] overflow-hidden bg-[#0a0a0a] border border-white/10 hover:border-white/40 active:border-white/40 hover:shadow-[0_0_30px_rgba(255,255,255,0.08)] transition-all duration-700 ease-out cursor-none
+                                    ${isDoubleWide ? "md:col-span-2 md:aspect-[21/9]" : "md:col-span-1 md:aspect-[4/5]"}
+                                    ${index === 1 && !isDoubleWide ? "md:mt-24" : ""}
+                                `}
+                                >
+                                    <ProjectCursor cursorText={t.nav.work !== "Work" ? "استكشف" : "VIEW"}>
+                                        <Link href={`/work/${project.slug}`} className="block w-full h-full relative overflow-hidden">
+                                            <div className="absolute inset-0 w-full h-[120%] -top-[10%]">
+                                                <Image
+                                                    src={getImageUrl(project.coverImage)}
+                                                    alt={project.title}
+                                                    fill
+                                                    sizes={isDoubleWide ? "100vw" : "(max-width: 768px) 100vw, 50vw"}
+                                                    // Grayscale by default, color on hover + slight scale
+                                                    className="object-cover transition-all duration-1000 ease-out grayscale group-hover:grayscale-0 group-hover:scale-105"
+                                                />
+                                            </div>
+                                            {/* Cinematic dark overlay gradient */}
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-40 transition-opacity duration-700" />
+
+                                            {/* Content inside the card */}
+                                            <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 z-10 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                                                <h3 className="font-heading text-3xl md:text-5xl text-white mb-3 font-bold tracking-tight drop-shadow-lg">
+                                                    {language === 'fr' && project.titleFr ? project.titleFr : project.title}
+                                                </h3>
+                                                <div className="flex items-center gap-4">
+                                                    <p className="font-body text-white/80 tracking-widest uppercase text-xs md:text-sm bg-white/10 px-4 py-1.5 rounded-full backdrop-blur-md border border-white/10">
+                                                        {project.role}
+                                                    </p>
+                                                    {project.year && (
+                                                        <p className="font-mono text-white/50 text-xs tracking-wider">
+                                                            {project.year}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    </ProjectCursor>
+                                </motion.div>
+                            )
+                        })}
                     </motion.div>
                 )}
             </div>

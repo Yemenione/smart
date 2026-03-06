@@ -9,7 +9,7 @@ export default function LegalLayout({
     return (
         <>
             <Navbar />
-            <main className="min-h-screen bg-[#050505] text-white/80 font-body selection:bg-white/20">
+            <main className="min-h-screen bg-background text-accent/80 font-body selection:bg-accent/20">
                 <div className="max-w-4xl mx-auto px-4 py-40 leading-relaxed">
                     {children}
                 </div>

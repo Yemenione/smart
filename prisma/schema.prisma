@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique // e.g., 'logoUrl', 'siteName'
+  value String
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  posts     Post[]
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  posts     Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  title       String   // English Title
+  titleFr     String?  @db.Text // French Title
+  content     String   @db.Text // English HTML
+  contentFr   String?  @db.Text // French HTML
+  slug        String   @unique
+  imageUrl    String?
+  published   Boolean  @default(false)
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+model Project {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  title        String   // English Title
+  titleFr      String?  @db.Text // French Title
+  client       String
+  role         String
+  year         String
+  techStack    String?
+  challenge    String?  @db.Text // English Challenge
+  challengeFr  String?  @db.Text // French Challenge
+  solution     String?  @db.Text // English Solution
+  solutionFr   String?  @db.Text // French Solution
+  coverImage   String?
+  gallery      String?  @db.Text // JSON array of images
+  liveUrl      String?
+  published    Boolean  @default(true)
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+model FAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String   @db.Text
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HeroSlide {
+  id        String   @id @default(cuid())
+  title     String
+  subtitle  String
+  price     String?
+  ctaText   String?
+  ctaLink   String?
+  imageUrl  String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model ProductApp {
+  id            String   @id @default(cuid())
+  name          String
+  nameFr        String?
+  category      String   // e.g., "E-Commerce", "Restaurant", "Corporate"
+  categoryFr    String?
+  description   String   @db.Text
+  descriptionFr String?  @db.Text
+  features      String   @db.Text // Comma separated list in English
+  featuresFr    String?  @db.Text // Comma separated list in French
+  priceText     String   // e.g., "€150/mo", "€2000 Setup"
+  priceTextFr   String?
+  imageUrl      String
+  demoLink      String?
+  isPopular     Boolean  @default(false)
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

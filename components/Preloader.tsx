@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Preloader() {
+    const { t } = useLanguage();
     const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => {
@@ -26,7 +28,7 @@ export default function Preloader() {
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                 className="font-heading text-white/50 tracking-[0.3em] text-sm uppercase"
             >
-                DEULEUX / INITIALIZING...
+                {t.preloader.initializing}
             </motion.div>
         </motion.div>
     );

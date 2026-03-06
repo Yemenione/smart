@@ -9,11 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        surface: "var(--surface)",
-        border: "var(--border)",
-        accent: "var(--accent)",
-        muted: "var(--muted)",
+        background: "rgba(var(--background), <alpha-value>)",
+        surface: "rgba(var(--surface), <alpha-value>)",
+        border: "rgba(var(--border), <alpha-value>)",
+        accent: "rgba(var(--accent), <alpha-value>)",
+        muted: "rgba(var(--muted), <alpha-value>)",
       },
       fontFamily: {
         heading: ["var(--font-space-grotesk)", "sans-serif"],

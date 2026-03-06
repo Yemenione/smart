@@ -3,26 +3,38 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import { useEffect, useState } from "react";
+import Magnetic from "@/components/ui/Magnetic";
 import { Menu, X } from "lucide-react";
 import LangSwitcher from "./LangSwitcher";
-import { useLanguage } from "@/context/LanguageContext";
+import { Search as SearchIcon } from "lucide-react";
+import SearchOverlay from "./SearchOverlay";
 
 const getLinks = (t: any) => [
+  { name: t.nav.home, path: "/" },
+  { name: t.nav.store || "Store", path: "/store" },
   { name: t.nav.services, path: "/services" },
   { name: t.nav.work, path: "/work" },
-  { name: t.nav.agency, path: "/agency" },
-  { name: t.nav.team, path: "/team" },
   { name: t.nav.insights, path: "/insights" },
-  { name: t.nav.careers, path: "/careers" },
+  { name: t.nav.agency, path: "/agency" },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const { t } = useLanguage();
   const links = getLinks(t);
+  const [settings, setSettings] = useState<{ logoUrl?: string; siteName?: string }>({});
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => setSettings({ logoUrl: data.logoUrl, siteName: data.siteName }))
+      .catch((err) => console.error("Failed to load logo", err));
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,20 +80,27 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className="font-heading text-2xl md:text-3xl font-bold tracking-tighter text-white z-[60] relative hoverable min-w-fit"
+          className="z-[60] relative hoverable min-w-fit flex items-center"
           onClick={() => setMenuOpen(false)}
         >
-          DEULEUX<span className="text-white/40">.</span>
+          {settings.logoUrl ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={settings.logoUrl} alt="Logo" className="h-8 md:h-10 w-auto object-contain" />
+          ) : (
+            <span className="font-heading text-2xl md:text-3xl font-bold tracking-tighter text-white">
+              {settings.siteName || "DEULEUX"}<span className="text-white/40">.</span>
+            </span>
+          )}
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-0 gap-x-4 lg:gap-x-8 flex-nowrap whitespace-nowrap">
-          {links.map((link) => {
+          {links.map((link, index) => {
             const isActive = pathname.startsWith(link.path);
             const isFr = t.nav.services === "Services" && t.nav.work === "Réalisations"; // Quick check
             return (
               <Link
-                key={link.name}
+                key={link.path}
                 href={link.path}
                 className={`font-body uppercase transition-colors duration-300 hoverable ${isFr ? "text-[13px] tracking-tight" : "text-sm tracking-widest"} ${isActive ? "text-white" : "text-white/50 hover:text-white"
                   }`}
@@ -94,7 +113,14 @@ export default function Navbar() {
 
         {/* Desktop CTA / Mobile Menu Toggle */}
         <div className="flex items-center space-x-6 z-[60] relative">
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-4">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="p-2 text-white/50 hover:text-white transition-colors hoverable"
+              aria-label="Search"
+            >
+              <SearchIcon size={20} />
+            </button>
             <LangSwitcher />
           </div>
 
@@ -130,7 +156,7 @@ export default function Navbar() {
               {links.map((link) => {
                 const isActive = pathname.startsWith(link.path);
                 return (
-                  <motion.div key={link.name} variants={linkVariants}>
+                  <motion.div key={link.path} variants={linkVariants}>
                     <Link
                       href={link.path}
                       onClick={() => setMenuOpen(false)}
@@ -142,14 +168,16 @@ export default function Navbar() {
                   </motion.div>
                 );
               })}
-              <motion.div variants={linkVariants} className="pt-8">
-                <Link
-                  href="/contact"
-                  onClick={() => setMenuOpen(false)}
-                  className="px-8 py-4 rounded-full border border-white/20 text-white text-sm font-body tracking-wider uppercase bg-white/5"
-                >
-                  {t.nav.startProject}
-                </Link>
+              <motion.div variants={linkVariants}>
+                <Magnetic maxDistance={40} magneticForce={0.2}>
+                  <Link
+                    href="/contact" // Changed to /contact to match original CTA
+                    onClick={() => setMenuOpen(false)} // Changed to match original CTA
+                    className="inline-flex h-12 items-center justify-center rounded-full bg-white/5 px-8 py-4 text-sm font-body tracking-wider uppercase text-white border border-white/20 transition-transform hover:scale-105" // Adjusted classes to match original CTA style
+                  >
+                    {t.nav.startProject} {/* Changed to match original CTA text */}
+                  </Link>
+                </Magnetic>
               </motion.div>
 
               <motion.div variants={linkVariants} className="pt-4 pb-4">
@@ -169,6 +197,7 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+      <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }

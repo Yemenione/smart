@@ -2,29 +2,31 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const steps = [
-    {
-        id: 1,
-        question: "What is your anticipated budget?",
-        options: ["$10k - $25k", "$25k - $50k", "$50k - $100k", "$100k+"]
-    },
-    {
-        id: 2,
-        question: "What is your desired timeline?",
-        options: ["1-2 Months", "3-4 Months", "6+ Months", "Ongoing Partner"]
-    },
-    {
-        id: 3,
-        question: "What is the primary tech stack?",
-        options: ["Next.js / React", "Laravel", "Shopify Headless", "Undecided"]
-    }
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Estimator() {
+    const { t } = useLanguage();
     const [currentStep, setCurrentStep] = useState(0);
     const [answers, setAnswers] = useState<Record<number, string>>({});
     const [isComplete, setIsComplete] = useState(false);
+
+    const steps = [
+        {
+            id: 1,
+            question: t.estimator.question1,
+            options: t.estimator.q1options
+        },
+        {
+            id: 2,
+            question: t.estimator.question2,
+            options: t.estimator.q2options
+        },
+        {
+            id: 3,
+            question: t.estimator.question3,
+            options: t.estimator.q3options
+        }
+    ];
 
     const handleSelect = (option: string) => {
         setAnswers({ ...answers, [currentStep]: option });
@@ -56,7 +58,7 @@ export default function Estimator() {
                     >
                         <div className="flex justify-between items-center mb-12">
                             <span className="font-heading text-xs tracking-widest uppercase text-white/50">
-                                Step 0{currentStep + 1} / 0{steps.length}
+                                {t.estimator.step} 0{currentStep + 1} / 0{steps.length}
                             </span>
                             <div className="flex gap-2">
                                 {steps.map((_, idx) => (
@@ -80,8 +82,8 @@ export default function Estimator() {
                                         key={idx}
                                         onClick={() => handleSelect(option)}
                                         className={`group relative w-full flex items-center justify-between p-6 rounded-2xl border transition-all duration-300 ${isSelected
-                                                ? 'border-white bg-white/5 shadow-[0_0_20px_rgba(255,255,255,0.1)]'
-                                                : 'border-white/10 hover:border-white/40 hover:bg-white/[0.02]'
+                                            ? 'border-white bg-white/5 shadow-[0_0_20px_rgba(255,255,255,0.1)]'
+                                            : 'border-white/10 hover:border-white/40 hover:bg-white/[0.02]'
                                             }`}
                                     >
                                         <span className={`font-body text-lg transition-colors duration-300 ${isSelected ? 'text-white text-glow' : 'text-white/70 group-hover:text-white'}`}>
@@ -118,13 +120,13 @@ export default function Estimator() {
                             </svg>
                         </div>
                         <h3 className="font-heading text-4xl text-white mb-4 text-glow">
-                            SCOPE CAPTURED.
+                            {t.estimator.scopeCaptured}
                         </h3>
                         <p className="font-body text-white/50 mb-10 max-w-sm mx-auto">
-                            Based on your incredibly ambitious parameters, we are ready to architect the future. Our partners will be in touch.
+                            {t.estimator.successMessage}
                         </p>
                         <button className="group relative px-8 py-4 bg-white text-black font-medium text-sm rounded-full overflow-hidden">
-                            <span className="relative z-10">PROCEED TO CONTACT</span>
+                            <span className="relative z-10">{t.estimator.proceed}</span>
                             <div className="absolute inset-0 bg-neutral-200 transform scale-y-0 group-hover:scale-y-100 origin-bottom transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"></div>
                         </button>
                     </motion.div>

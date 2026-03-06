@@ -3,17 +3,63 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 const STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL || "http://127.0.0.1:8000/storage";
 
+export interface ProductApp {
+    id: string;
+    name: string;
+    nameFr?: string | null;
+    category: string;
+    categoryFr?: string | null;
+    description: string;
+    descriptionFr?: string | null;
+    features: string;
+    featuresFr?: string | null;
+    priceText: string;
+    priceTextFr?: string | null;
+    imageUrl: string;
+    demoLink?: string | null;
+    isPopular: boolean;
+    order: number;
+}
+
 export interface ProjectData {
-    id: number;
+    id: string;
     title: string;
+    titleFr?: string | null;
     slug: string;
     client: string;
     role: string;
     year: string;
     challenge?: string;
+    challengeFr?: string | null;
     solution?: string;
-    tech_stack?: string[];
-    cover_image?: string;
+    solutionFr?: string | null;
+    techStack?: string;
+    coverImage?: string | null;
+    gallery?: string | null;
+    liveUrl?: string | null;
+    order: number;
+    published: boolean;
+    createdAt: string;
+}
+
+export interface PostData {
+    id: string;
+    title: string;
+    titleFr?: string | null;
+    content: string;
+    contentFr?: string | null;
+    imageUrl?: string | null;
+    slug: string;
+    published: boolean;
+    createdAt: string;
+}
+
+export interface SettingsData {
+    siteName?: string;
+    logoUrl?: string;
+    faviconUrl?: string;
+    contactEmail?: string;
+    contactPhone?: string;
 }
 
 export interface FullProjectData extends ProjectData {
@@ -23,62 +69,38 @@ export interface FullProjectData extends ProjectData {
 // Fallback Mock Data to keep the frontend beautiful when the backend is down
 const MOCK_PROJECTS: ProjectData[] = [
     {
-        id: 1,
+        id: "1",
         title: "Quantum E-Commerce",
         role: "Headless Architecture",
-        cover_image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
+        coverImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
         slug: "quantum",
         client: "Quantum Corp",
         year: "2023",
-    },
-    {
-        id: 2,
-        title: "Aura Paris",
-        role: "UI/UX Experience",
-        cover_image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop",
-        slug: "aura",
-        client: "Aura Fashion",
-        year: "2022",
-    },
-    {
-        id: 3,
-        title: "Neuromorphic AI",
-        role: "Creative Engineering",
-        cover_image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop",
-        slug: "neuromorphic",
-        client: "NeuroTech Solutions",
-        year: "2024",
-    },
-    {
-        id: 4,
-        title: "Vanguard Tech",
-        role: "Digital Transformation",
-        cover_image: "https://images.unsplash.com/photo-1614729939124-03290b5609ce?q=80&w=1200&auto=format&fit=crop",
-        slug: "vanguard",
-        client: "Vanguard Innovations",
-        year: "2021",
+        published: true,
+        order: 0,
+        createdAt: new Date().toISOString()
     }
 ];
 
 export const getProjects = async (): Promise<ProjectData[]> => {
     try {
-        const res = await fetch(`${API_URL}/projects`, { next: { revalidate: 60 } });
+        const res = await fetch("/api/projects", { cache: "no-store" });
 
         if (!res.ok) {
             throw new Error(`Failed to fetch projects: ${res.status}`);
         }
 
-        const json = await res.json();
-        return json.data;
+        const data = await res.json();
+        return data; // returns individual objects from DB
     } catch (error) {
-        console.warn("API is unreachable. Using premium fallback mock data.");
+        console.warn("Local DB API fetching failed. Using mock fallback.");
         return MOCK_PROJECTS;
     }
 };
 
 export async function getProjectBySlug(slug: string): Promise<FullProjectData | null> {
     try {
-        const res = await fetch(`${API_URL}/projects/${slug}`, {
+        const res = await fetch(`/api/projects?slug=${slug}`, {
             next: { revalidate: 60 },
         });
 
@@ -86,22 +108,25 @@ export async function getProjectBySlug(slug: string): Promise<FullProjectData | 
             throw new Error(`Failed to fetch project ${slug}`);
         }
 
-        const json = await res.json();
-        return json.data;
+        const data = await res.json();
+        return Array.isArray(data) ? data.find((p: any) => p.slug === slug) : data;
     } catch (error) {
         console.warn(`API is unreachable for project ${slug}. Using premium fallback mock data.`);
 
         return {
-            id: 99,
+            id: "99",
             title: slug === "quantum" ? "Quantum E-Commerce" : "Project " + slug,
             role: "Headless Architecture",
-            cover_image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
+            coverImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
             slug: slug,
             client: "Aura Paris",
             year: "2026",
             challenge: "Decoupling their massive Monolith into a state-of-the-art Headless ecosystem, achieving sub-second load times while maintaining a sophisticated visual identity and flawless motion design.",
             solution: "Leveraging Next.js on the edge, combined with a robust Laravel API. We implemented aggressive ISR caching strategies and custom WebGL shaders to deliver an experience that feels truly transformative and elite.",
-            tech_stack: ["Next.js", "Laravel", "Tailwind CSS", "Framer Motion"]
+            techStack: "Next.js, Laravel, Tailwind CSS, Framer Motion",
+            published: true,
+            order: 0,
+            createdAt: new Date().toISOString()
         };
     }
 }
@@ -132,3 +157,42 @@ export const submitContact = async (data: { name: string; email: string; message
         return { success: true, message: "Simulated transmission success" };
     }
 }
+
+export const getPosts = async (): Promise<PostData[]> => {
+    try {
+        const res = await fetch("/api/posts", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch posts");
+        return await res.json();
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+};
+
+export const getSettings = async (): Promise<SettingsData> => {
+    try {
+        const res = await fetch("/api/settings", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch settings");
+        return await res.json();
+    } catch (error) {
+        console.error(error);
+        return {};
+    }
+};
+export interface FAQData {
+    id: string;
+    question: string;
+    answer: string;
+    order: number;
+}
+
+export const getFaqs = async (): Promise<FAQData[]> => {
+    try {
+        const res = await fetch("/api/faqs", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch FAQs");
+        return await res.json();
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+};

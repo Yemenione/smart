@@ -1,8 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Services() {
+    const { t } = useLanguage();
     const containerVariants = {
         hidden: { opacity: 0 },
         show: {
@@ -26,7 +28,7 @@ export default function Services() {
                     transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
                     className="font-heading text-4xl md:text-5xl text-white mb-16 tracking-tight"
                 >
-                    Engineering The Future. / Notre Expertise.
+                    {t.homeServices.title}
                 </motion.h2>
 
                 <motion.div
@@ -43,10 +45,10 @@ export default function Services() {
                     >
                         <div className="absolute inset-0 bg-white/[0.02] opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-500" />
                         <h3 className="text-2xl font-heading text-white mb-4 group-hover:-translate-y-1 group-hover:text-glow transition-all duration-500">
-                            High-Performance Next.js Frontends
+                            {t.homeServices.frontend.title}
                         </h3>
                         <p className="text-neutral-400 font-body max-w-md group-hover:-translate-y-1 transition-transform duration-500">
-                            We build lightning-fast, SEO-optimized web applications utilizing the bleeding edge of the React ecosystem.
+                            {t.homeServices.frontend.desc}
                         </p>
                     </motion.div>
 
@@ -57,10 +59,10 @@ export default function Services() {
                     >
                         <div className="absolute inset-0 bg-white/[0.02] opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-500" />
                         <h3 className="text-2xl font-heading text-white mb-4 group-hover:-translate-y-1 group-hover:text-glow transition-all duration-500">
-                            Premium UI/UX Design
+                            {t.homeServices.design.title}
                         </h3>
                         <p className="text-neutral-400 font-body group-hover:-translate-y-1 transition-transform duration-500">
-                            Award-winning digital experiences that merge Swiss minimalism with cinematic interactions.
+                            {t.homeServices.design.desc}
                         </p>
                     </motion.div>
 
@@ -71,10 +73,10 @@ export default function Services() {
                     >
                         <div className="absolute inset-0 bg-white/[0.02] opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-500" />
                         <h3 className="text-2xl font-heading text-white mb-4 group-hover:-translate-y-1 group-hover:text-glow transition-all duration-500">
-                            Laravel Headless Architecture
+                            {t.homeServices.backend.title}
                         </h3>
                         <p className="text-neutral-400 font-body group-hover:-translate-y-1 transition-transform duration-500">
-                            Robust, scalable, and secure backend systems powering complex enterprise solutions.
+                            {t.homeServices.backend.desc}
                         </p>
                     </motion.div>
 
@@ -85,10 +87,10 @@ export default function Services() {
                     >
                         <div className="absolute inset-0 bg-white/[0.02] opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-500" />
                         <h3 className="text-2xl font-heading text-white mb-4 group-hover:-translate-y-1 group-hover:text-glow transition-all duration-500">
-                            Scalable API Systems & Cloud
+                            {t.homeServices.cloud.title}
                         </h3>
                         <p className="text-neutral-400 font-body max-w-md group-hover:-translate-y-1 transition-transform duration-500">
-                            Global infrastructure, microservices, and specialized API development built for immense traffic.
+                            {t.homeServices.cloud.desc}
                         </p>
                     </motion.div>
                 </motion.div>
