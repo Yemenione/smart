@@ -39,14 +39,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function StorePage() {
     // Fetch apps Server-Side with error boundary fallback
-    let apps = [];
+    let apps: any[] = [];
     try {
         apps = await prisma.productApp.findMany({
             orderBy: { order: 'asc' },
         });
     } catch (error) {
         console.error("CRITICAL: Failed to fetch apps for StorePage:", error);
-        // apps remains []
     }
 
     return (
