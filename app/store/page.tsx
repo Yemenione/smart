@@ -1,12 +1,10 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import StoreClient from "./StoreClient";
-import { PrismaClient } from '@prisma/client'
+import { prisma } from "@/lib/prisma";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { translations, Language } from "@/lib/translations";
-
-const prisma = new PrismaClient()
 
 export async function generateMetadata(): Promise<Metadata> {
     const cookieStore = await cookies();

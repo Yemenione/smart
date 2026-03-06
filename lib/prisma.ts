@@ -2,18 +2,20 @@ import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
-console.log("Initializing Prisma Client...");
-if (process.env.DATABASE_URL) {
-    const maskedUrl = process.env.DATABASE_URL.replace(/:[^@:]+@/, ":****@");
-    console.log(`Using DATABASE_URL: ${maskedUrl}`);
-} else {
-    console.warn("DATABASE_URL is not defined!");
-}
+// Robust Prisma initialization
+const createPrismaClient = () => {
+    try {
+        return new PrismaClient({
+            log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+            errorFormat: "minimal",
+        });
+    } catch (error) {
+        console.error("CRITICAL: Failed to initialize Prisma Client", error);
+        // Fallback or re-throw depending on your preference
+        throw error;
+    }
+};
 
-export const prisma =
-    globalForPrisma.prisma ||
-    new PrismaClient({
-        log: ["error", "warn"],
-    });
+export const prisma = globalForPrisma.prisma || createPrismaClient();
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
