@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Save, Loader2, Edit3 } from "lucide-react";
-import ImageUpload from "@/components/ImageUpload";
+import ImageUpload from "@/components/ui/ImageUpload";
 
 export default function AdminSettings() {
     const [settings, setSettings] = useState({

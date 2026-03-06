@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { productService } from "@/lib/services/product";
 
 export async function PUT(
     request: Request,
@@ -9,23 +8,7 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await request.json();
-        const { name, category, description, features, priceText, imageUrl, demoLink, isPopular, order } = body;
-
-        const updatedApp = await prisma.productApp.update({
-            where: { id },
-            data: {
-                name,
-                category,
-                description,
-                features,
-                priceText,
-                imageUrl,
-                demoLink,
-                isPopular,
-                order,
-            },
-        });
-
+        const updatedApp = await productService.update(id, body);
         return NextResponse.json(updatedApp);
     } catch (error) {
         console.error("Error updating app:", error);
@@ -39,10 +22,7 @@ export async function DELETE(
 ) {
     try {
         const { id } = await params;
-        await prisma.productApp.delete({
-            where: { id },
-        });
-
+        await productService.delete(id);
         return NextResponse.json({ success: true, message: "App deleted successfully" });
     } catch (error) {
         console.error("Error deleting app:", error);

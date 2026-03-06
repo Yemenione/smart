@@ -1,11 +1,11 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { submitContact } from "@/lib/api";
-import AnimatedDivider from "@/components/AnimatedDivider";
+import AnimatedDivider from "@/components/ui/AnimatedDivider";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function ContactClient() {

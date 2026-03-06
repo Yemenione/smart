@@ -1,13 +1,13 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import { motion } from "framer-motion";
 import { useParams, notFound } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import ReadingProgress from "@/components/ui/ReadingProgress";
-import ShareWidget from "@/components/ShareWidget";
+import ShareWidget from "@/components/ui/ShareWidget";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function PostClient() {

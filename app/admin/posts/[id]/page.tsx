@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Save, Loader2, ArrowLeft, Globe, FileText, ImageIcon } from "lucide-react";
-import ImageUpload from "@/components/ImageUpload";
+import ImageUpload from "@/components/ui/ImageUpload";
 import Link from "next/link";
 
 export default function PostEditor() {

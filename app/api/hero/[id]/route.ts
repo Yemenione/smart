@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { heroService } from "@/lib/services/hero";
 
 // UPDATE a slide
 export async function PUT(
@@ -9,21 +9,7 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await request.json();
-        const { title, subtitle, price, ctaText, ctaLink, imageUrl, order } = body;
-
-        const updatedSlide = await prisma.heroSlide.update({
-            where: { id },
-            data: {
-                title,
-                subtitle,
-                price,
-                ctaText,
-                ctaLink,
-                imageUrl,
-                order,
-            },
-        });
-
+        const updatedSlide = await heroService.update(id, body);
         return NextResponse.json(updatedSlide);
     } catch (error) {
         console.error("Error updating hero slide:", error);
@@ -38,10 +24,7 @@ export async function DELETE(
 ) {
     try {
         const { id } = await params;
-        await prisma.heroSlide.delete({
-            where: { id },
-        });
-
+        await heroService.delete(id);
         return NextResponse.json({ success: true, message: "Slide deleted successfully" });
     } catch (error) {
         console.error("Error deleting hero slide:", error);

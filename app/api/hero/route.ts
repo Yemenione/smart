@@ -1,14 +1,10 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { heroService } from "@/lib/services/hero";
 
 // GET /api/hero
 export async function GET() {
     try {
-        const slides = await prisma.heroSlide.findMany({
-            orderBy: {
-                order: 'asc',
-            },
-        });
+        const slides = await heroService.getAll();
         return NextResponse.json(slides);
     } catch (error) {
         console.error("Error fetching hero slides:", error);
@@ -20,24 +16,12 @@ export async function GET() {
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { title, subtitle, price, ctaText, ctaLink, imageUrl, order } = body;
 
-        if (!title || !subtitle || !imageUrl) {
+        if (!body.title || !body.subtitle || !body.imageUrl) {
             return NextResponse.json({ error: "Title, subtitle, and image are required" }, { status: 400 });
         }
 
-        const newSlide = await prisma.heroSlide.create({
-            data: {
-                title,
-                subtitle,
-                price,
-                ctaText,
-                ctaLink,
-                imageUrl,
-                order: order || 0,
-            },
-        });
-
+        const newSlide = await heroService.create(body);
         return NextResponse.json(newSlide, { status: 201 });
     } catch (error) {
         console.error("Error creating hero slide:", error);

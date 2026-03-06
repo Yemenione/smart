@@ -1,8 +1,8 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import WorkSection from "@/components/Work";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import WorkSection from "@/components/sections/Work";
 import { motion } from "framer-motion";
 
 import { useLanguage } from "@/context/LanguageContext";

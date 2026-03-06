@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { getPosts, PostData } from "@/lib/api";
 import Image from "next/image";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import Skeleton from "@/components/ui/Skeleton";

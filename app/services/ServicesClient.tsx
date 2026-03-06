@@ -1,10 +1,10 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import GridBackground from "@/components/GridBackground";
-import AnimatedDivider from "@/components/AnimatedDivider";
-import ScrollRevealText from "@/components/ScrollRevealText";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import GridBackground from "@/components/ui/GridBackground";
+import AnimatedDivider from "@/components/ui/AnimatedDivider";
+import ScrollRevealText from "@/components/sections/ScrollRevealText";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 

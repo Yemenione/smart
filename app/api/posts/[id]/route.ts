@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { postService } from "@/lib/services/post";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
-        const post = await prisma.post.findUnique({
-            where: { id },
-        });
+        const post = await postService.getById(id);
 
         if (!post) {
             return NextResponse.json({ error: "Post not found" }, { status: 404 });
@@ -23,19 +21,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     try {
         const { id } = await params;
         const data = await request.json();
-
-        const post = await prisma.post.update({
-            where: { id },
-            data: {
-                title: data.title,
-                titleFr: data.titleFr || null,
-                content: data.content,
-                contentFr: data.contentFr || null,
-                imageUrl: data.imageUrl,
-                published: data.published,
-            },
-        });
-
+        const post = await postService.update(id, data);
         return NextResponse.json(post);
     } catch (error) {
         console.error("Error updating post:", error);
@@ -46,10 +32,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
-        await prisma.post.delete({
-            where: { id },
-        });
-
+        await postService.delete(id);
         return NextResponse.json({ success: true, message: "Post deleted successfully" });
     } catch (error) {
         console.error("Error deleting post:", error);

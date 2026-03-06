@@ -1,15 +1,15 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useParams, notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import AnimatedDivider from "@/components/AnimatedDivider";
+import AnimatedDivider from "@/components/ui/AnimatedDivider";
 import ReadingProgress from "@/components/ui/ReadingProgress";
-import ScrollRevealText from "@/components/ScrollRevealText";
-import ShareWidget from "@/components/ShareWidget";
+import ScrollRevealText from "@/components/sections/ScrollRevealText";
+import ShareWidget from "@/components/ui/ShareWidget";
 import { useEffect, useRef, useState } from "react";
 import { getProjectBySlug, FullProjectData } from "@/lib/api";
 import { useLanguage } from "@/context/LanguageContext";

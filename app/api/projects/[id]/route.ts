@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { projectService } from "@/lib/services/project";
 
 export async function GET(
     req: Request,
@@ -7,9 +7,7 @@ export async function GET(
 ) {
     try {
         const { id } = await params;
-        const project = await prisma.project.findUnique({
-            where: { id },
-        });
+        const project = await projectService.getById(id);
 
         if (!project) {
             return NextResponse.json({ error: "Project not found" }, { status: 404 });
@@ -28,28 +26,7 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await req.json();
-        const { title, titleFr, client, role, year, challenge, challengeFr, solution, solutionFr, techStack, coverImage, gallery, liveUrl, order } = body;
-
-        const project = await prisma.project.update({
-            where: { id },
-            data: {
-                title,
-                titleFr: titleFr || null,
-                client,
-                role,
-                year,
-                challenge: challenge || null,
-                challengeFr: challengeFr || null,
-                solution: solution || null,
-                solutionFr: solutionFr || null,
-                techStack: techStack || null,
-                coverImage,
-                gallery: gallery || null,
-                liveUrl: liveUrl || null,
-                order: order || 0,
-            },
-        });
-
+        const project = await projectService.update(id, body);
         return NextResponse.json(project);
     } catch (error) {
         return NextResponse.json({ error: "Failed to update project" }, { status: 500 });
@@ -62,9 +39,7 @@ export async function DELETE(
 ) {
     try {
         const { id } = await params;
-        await prisma.project.delete({
-            where: { id },
-        });
+        await projectService.delete(id);
         return NextResponse.json({ message: "Project deleted" });
     } catch (error) {
         return NextResponse.json({ error: "Failed to delete project" }, { status: 500 });

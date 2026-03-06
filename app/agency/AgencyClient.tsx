@@ -1,11 +1,11 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
-import ScrollRevealText from "@/components/ScrollRevealText";
-import AnimatedDivider from "@/components/AnimatedDivider";
+import ScrollRevealText from "@/components/sections/ScrollRevealText";
+import AnimatedDivider from "@/components/ui/AnimatedDivider";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";

@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import CookieBanner from "@/components/CookieBanner";
-import Preloader from "@/components/Preloader";
-import CustomCursor from "@/components/CustomCursor";
-import CursorSpotlight from "@/components/CursorSpotlight";
-import CinematicNoise from "@/components/CinematicNoise";
-import GridBackground from "@/components/GridBackground";
-import WhatsAppButton from "@/components/WhatsAppButton";
-import ExitIntentModal from "@/components/ExitIntentModal";
+import CookieBanner from "@/components/layout/CookieBanner";
+import Preloader from "@/components/layout/Preloader";
+import CustomCursor from "@/components/ui/CustomCursor";
+import CursorSpotlight from "@/components/ui/CursorSpotlight";
+import CinematicNoise from "@/components/ui/CinematicNoise";
+import GridBackground from "@/components/ui/GridBackground";
+import WhatsAppButton from "@/components/ui/WhatsAppButton";
+import ExitIntentModal from "@/components/layout/ExitIntentModal";
 import { LanguageProvider } from "@/context/LanguageContext";
 
 const inter = Inter({

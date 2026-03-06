@@ -7,7 +7,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useEffect, useState } from "react";
 import Magnetic from "@/components/ui/Magnetic";
 import { Menu, X } from "lucide-react";
-import LangSwitcher from "./LangSwitcher";
+import LangSwitcher from "@/components/ui/LangSwitcher";
 import { Search as SearchIcon } from "lucide-react";
 import SearchOverlay from "./SearchOverlay";
 

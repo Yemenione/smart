@@ -1,15 +1,15 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
-import Services from "@/components/Services";
-import Work from "@/components/Work";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Services from "@/components/sections/Services";
+import Work from "@/components/sections/Work";
+import Footer from "@/components/layout/Footer";
 import { motion } from "framer-motion";
-import AnimatedDivider from "@/components/AnimatedDivider";
+import AnimatedDivider from "@/components/ui/AnimatedDivider";
 import { useLanguage } from "@/context/LanguageContext";
-import MarketingHero from "@/components/MarketingHero";
-import InfiniteMarquee from "@/components/InfiniteMarquee";
-import FeaturedOffers from "@/components/FeaturedOffers";
+import MarketingHero from "@/components/sections/MarketingHero";
+import InfiniteMarquee from "@/components/sections/InfiniteMarquee";
+import FeaturedOffers from "@/components/sections/FeaturedOffers";
 
 export default function Home() {
   const { t } = useLanguage();
