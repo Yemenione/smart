@@ -4,9 +4,10 @@ import { projectService } from "@/lib/services/project";
 export async function GET() {
     try {
         const projects = await projectService.getAll();
-        return NextResponse.json(projects);
+        return NextResponse.json(Array.isArray(projects) ? projects : []);
     } catch (error) {
-        return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 });
+        console.error("Error fetching projects:", error);
+        return NextResponse.json([], { status: 200 });
     }
 }
 

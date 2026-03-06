@@ -5,10 +5,10 @@ import { heroService } from "@/lib/services/hero";
 export async function GET() {
     try {
         const slides = await heroService.getAll();
-        return NextResponse.json(slides);
+        return NextResponse.json(Array.isArray(slides) ? slides : []);
     } catch (error) {
         console.error("Error fetching hero slides:", error);
-        return NextResponse.json({ error: "Failed to fetch hero slides" }, { status: 500 });
+        return NextResponse.json([], { status: 200 }); // Return empty array to keep UI stable
     }
 }
 

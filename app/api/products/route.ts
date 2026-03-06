@@ -4,9 +4,10 @@ import { productService } from "@/lib/services/product";
 export async function GET() {
     try {
         const apps = await productService.getAll();
-        return NextResponse.json(apps);
+        return NextResponse.json(Array.isArray(apps) ? apps : []);
     } catch (error) {
-        return NextResponse.json({ error: "Failed to fetch apps" }, { status: 500 });
+        console.error("Error fetching apps:", error);
+        return NextResponse.json([], { status: 200 });
     }
 }
 

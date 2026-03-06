@@ -38,15 +38,21 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function StorePage() {
-    // Fetch apps Server-Side for SEO
-    const apps = await prisma.productApp.findMany({
-        orderBy: { order: 'asc' },
-    });
+    // Fetch apps Server-Side with error boundary fallback
+    let apps = [];
+    try {
+        apps = await prisma.productApp.findMany({
+            orderBy: { order: 'asc' },
+        });
+    } catch (error) {
+        console.error("CRITICAL: Failed to fetch apps for StorePage:", error);
+        // apps remains []
+    }
 
     return (
         <main className="min-h-screen bg-[#050505] text-white selection:bg-white/20">
             <Navbar />
-            <StoreClient initialApps={apps} />
+            <StoreClient initialApps={Array.isArray(apps) ? apps : []} />
             <Footer />
         </main>
     );
