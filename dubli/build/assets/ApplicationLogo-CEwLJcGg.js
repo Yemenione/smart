@@ -1,0 +1,1 @@
+import{u as o,j as s}from"./app-Bdkb2PHq.js";function n(a){const{logoUrl:t,siteName:e}=o().props;return t?s.jsx("img",{src:t,alt:"Logo",className:a.className,style:{maxHeight:"100%",width:"auto"}}):s.jsxs("span",{className:a.className+" font-heading font-bold tracking-tighter",children:[e||"SMARTOUIES",s.jsx("span",{className:"text-white/40",children:"."})]})}export{n as A};

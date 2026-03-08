@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --background: 5, 5, 5;
+    --surface: 17, 17, 17;
+    --border: 255, 255, 255;
+    --accent: 255, 255, 255;
+    --muted: 136, 136, 136;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: rgb(var(--background));
+    color: var(--accent);
+    font-family: var(--font-inter), sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(var(--surface), 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(var(--accent), 0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--accent), 0.5);
+}
+
+@media (pointer: fine) {
+    body {
+        /* cursor: none; */
+    }
+}
+
+@layer base {
+
+    h1,
+    .text-fluid-h1 {
+        font-size: clamp(2.5rem, 8vw, 9rem);
+        line-height: 1.1;
+    }
+
+    h2,
+    .text-fluid-h2 {
+        font-size: clamp(2rem, 5vw, 5rem);
+        line-height: 1.1;
+    }
+
+    h3,
+    .text-fluid-h3 {
+        font-size: clamp(1.5rem, 3vw, 3rem);
+        line-height: 1.2;
+    }
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    /* Elite Aura Gradient Text */
+    .text-gradient-aura {
+        background: linear-gradient(to right, #ffffff, #888888, #333333, #ffffff);
+        background-size: 200% auto;
+        color: transparent;
+        -webkit-background-clip: text;
+        background-clip: text;
+        animation: gradientAura 6s linear infinite;
+    }
+
+    /* Cinematic Glow */
+    .text-glow {
+        text-shadow: 0 0 30px rgba(255, 255, 255, 0.4), 0 0 60px rgba(255, 255, 255, 0.1);
+    }
+}
+
+@keyframes gradientAura {
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: 200% center;
+    }
+}
+
+.hoverable:hover {
+    /* cursor: none; */
+}
+
+@layer components {
+    .glass-panel {
+        background-color: rgba(17, 17, 17, 0.5);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+    }
+}
